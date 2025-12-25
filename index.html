@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>whether app - simple</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <div class="search">
+        <input type="text" placeholder="Enter The City Name" spellcheck="false">
+        <button><img src="images/search.png" alt=""></button>
+    </div>
+    <div class="weather">
+        <h1 class="temp">22°c</h1>
+        <h2 class="City">New York</h2>
+        <div class="details">
+            <div class="col">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>humidity</p>
+                </div>
+            </div>
+            <div class="col">
+                <div>
+                    <p class="wind">50%</p>
+                    <p>wind</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+const apikey = "378cdeadb7d0145f469c07cdf15af882";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+const searchbox = document.querySelector(".search input");
+const searchbtn = document.querySelector(".search button");
+const weatherBox = document.querySelector(".weather");
+
+async function checkweather(city) {
+    // 1. If the city not existing (error)
+    const response = await fetch(apiUrl + city + `&appid=${apikey}`);
+
+    if (response.status == 404) {
+        alert("City not found! Please check the spelling.");
+        weatherBox.style.display = "none";
+    } else {
+        var data = await response.json();
+
+
+        document.querySelector(".City").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+        // 3. display
+        weatherBox.style.display = "block";
+    }
+}
+
+// Event listener for button click
+searchbtn.addEventListener("click", () => {
+    checkweather(searchbox.value);
+});
+
+// UX Improvement: Allow pressing "Enter" to search
+searchbox.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        checkweather(searchbox.value);
+    }
+});
+</script>
+    
+</body>
+</html>
